@@ -13,3 +13,18 @@ export const getDirectLink = async (shortCode: string) => {
 
   return await response.json();
 };
+
+export const postDirectLink = async (shortCode: string, fullLink: string) => {
+  const response = await fetch(`${SHORTLINK_DIRECT_ENDPOINT}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      shortCode,
+      longUrl: fullLink,
+    }),
+  }).then(async (res) => await res.json());
+  console.log(response.data);
+  return response.data;
+};

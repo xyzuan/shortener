@@ -16,9 +16,11 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { postDirectLink } from "@/services/shortlink";
 
 const shortenerSchema = z.object({
-  link: z.string().trim().min(1, "Link cannot be empty"),
+  shortCode: z.string().trim().min(1, "Short Code cannot be empty"),
+  fullLink: z.string().trim().min(1, "Link cannot be empty"),
 });
 
 const LinkFormInput = () => {
@@ -27,31 +29,32 @@ const LinkFormInput = () => {
   const form = useForm<z.infer<typeof shortenerSchema>>({
     resolver: zodResolver(shortenerSchema),
     defaultValues: {
-      link: "",
+      shortCode: "",
+      fullLink: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof shortenerSchema>) => {
     setIsSending(true);
-    // toast.promise(postChat(values.message), {
-    //   loading: "Sending message to Eden...",
-    //   success: () => {
-    //     form.reset();
-    //     return `Sended Successfuly.`;
-    //   },
-    //   error: (err) => err,
-    //   finally: () => setIsSending(false),
-    // });
+    toast.promise(postDirectLink(values.shortCode, values.fullLink), {
+      loading: "Telling your link to eden...",
+      success: () => {
+        form.reset();
+        return `Leched Successfuly.`;
+      },
+      error: (err) => err,
+      finally: () => setIsSending(false),
+    });
   };
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-x-3 pt-3 w-full"
+        className="flex flex-col md:flex-row gap-3 pt-3 w-full"
       >
         <FormField
           control={form.control}
-          name="link"
+          name="fullLink"
           disabled={isSending}
           render={({ field }) => (
             <FormItem className="w-full">
@@ -59,6 +62,23 @@ const LinkFormInput = () => {
                 <Input
                   className="backdrop-blur-2xl bg-background/65"
                   placeholder="Input your link"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="shortCode"
+          disabled={isSending}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                <Input
+                  className="backdrop-blur-2xl bg-background/65"
+                  placeholder="Input your short link"
                   {...field}
                 />
               </FormControl>

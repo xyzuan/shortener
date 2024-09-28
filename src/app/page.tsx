@@ -1,7 +1,6 @@
 import React from "react";
 import Typography from "@/components/ui/typography";
 import LinkFormInput from "./components/link-form-input";
-import RetroGrid from "@/components/ui/retro-grid";
 
 export default function Home() {
   return (
@@ -21,11 +20,6 @@ export default function Home() {
         </Typography.P>
         <LinkFormInput />
       </div>
-
-      <RetroGrid />
-      <Typography.P className="absolute bottom-12 opacity-55 text-xs">
-        made by xyzuan
-      </Typography.P>
     </div>
   );
 }
